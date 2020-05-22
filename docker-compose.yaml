@@ -1,0 +1,35 @@
+version: "3.8"
+services: 
+  touristapi:
+    container_name: tourist-api
+    ports: 
+      - "8081:80"
+    build:        
+      context: ./api
+      dockerfile: Dockerfile
+      labels: 
+        - "tourist-api"
+  sqlserver:
+    container_name: sqlserver
+    ports:
+      - "1433:1433"
+    image: mcr.microsoft.com/mssql/rhel/server:2019-CU1-rhel-8
+    environment: 
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${SQL_SERVER_SA_PASSWORD}
+    volumes:
+      - sql-server-volume:/var/opt/mssql       
+  touristfe:
+    container_name: tourist-fe
+    ports: 
+      - "8080:80"
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+      labels: 
+        - "tourist-fe" 
+volumes: 
+  sql-server-volume:        
+    driver: local    
+    
+
