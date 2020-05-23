@@ -1,0 +1,11 @@
+using System.Collections.Generic;
+using TouristAPI.Model;
+
+namespace TouristAPI.Database.Repository
+{
+  public interface ILocationRepository
+  {
+    Location Save(Location location);
+    IList<Location> FindAll();
+  }
+}

@@ -1,17 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using TouristAPI.Database.Context;
+using Microsoft.EntityFrameworkCore;
+using TouristAPI.Database.Repository;
+using System;
+using TouristAPI.Service;
 
-namespace TourisAPI.Api
+namespace TouristAPI.Api
 {
     public class Startup
     {
@@ -26,6 +24,17 @@ namespace TourisAPI.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+                        
+            services.AddScoped<ILocationService, LocationService>();      
+
+            services.AddScoped<ILocationRepository, LocationRepository>();            
+
+            services.AddDbContext<DatabaseContext>(
+              options => options.UseSqlServer(
+                Environment.GetEnvironmentVariable("TOURIST_API_DB_CONNECTION_STRING"), 
+                b => b.MigrationsAssembly("TouristAPI.Api")
+              )
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

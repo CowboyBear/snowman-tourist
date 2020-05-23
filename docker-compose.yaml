@@ -9,6 +9,10 @@ services:
       dockerfile: Dockerfile
       labels: 
         - "tourist-api"
+    environment: 
+      - TOURIST_API_DB_CONNECTION_STRING=${TOURIST_API_DB_CONNECTION_STRING_DOCKER}
+    depends_on: 
+      - sqlserver
   sqlserver:
     container_name: sqlserver
     ports:
@@ -28,6 +32,8 @@ services:
       dockerfile: Dockerfile
       labels: 
         - "tourist-fe" 
+    depends_on: 
+      - touristapi
 volumes: 
   sql-server-volume:        
     driver: local    

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace TourisAPI.Api
+namespace TouristAPI.Api
 {
     public class Program
     {
