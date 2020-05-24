@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using TouristAPI.Database.Repository;
 using TouristAPI.Model;
+using TouristAPI.Service.Validators;
 
 namespace TouristAPI.Service
 {
@@ -10,9 +11,12 @@ namespace TouristAPI.Service
   {
 
     private ILocationRepository _repository;
+    private ILocationFormValidator _formValidator;
 
-    public LocationService(ILocationRepository repository){
+    public LocationService(ILocationRepository repository, ILocationFormValidator formValidator)
+    {
       _repository = repository;
+      _formValidator = formValidator;
     }
 
     public IList<Location> FindAll()
@@ -21,8 +25,25 @@ namespace TouristAPI.Service
     }
 
     public Location Save(IFormCollection formData)
-    {      
-      throw new NotImplementedException("Too be implemented soon");
+    {
+      if (_formValidator.isValid(formData))
+      {
+        return _repository.Save(parseToLocation(formData));
+      }
+
+      return null;
+    }
+
+    private Location parseToLocation(IFormCollection formData)
+    {
+      return new Location()
+      {
+        Name = formData["Name"],
+        Address = formData["Address"],
+        Lat = Convert.ToDouble(formData["Lat"]),
+        Lng = Convert.ToDouble(formData["Lng"]),
+        UserId = formData["UserId"]
+      };
     }
   }
 }

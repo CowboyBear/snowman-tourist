@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using TouristAPI.Database.Repository;
 using System;
 using TouristAPI.Service;
+using TouristAPI.Service.Validators;
 
 namespace TouristAPI.Api
 {
@@ -25,7 +26,8 @@ namespace TouristAPI.Api
         {
             services.AddControllers();
                         
-            services.AddScoped<ILocationService, LocationService>();      
+            services.AddScoped<ILocationService, LocationService>();    
+            services.AddScoped<ILocationFormValidator, LocationFormValidator>();
 
             services.AddScoped<ILocationRepository, LocationRepository>();            
             services.AddScoped<IDatabaseContext, DatabaseContext>();

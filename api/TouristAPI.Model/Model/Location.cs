@@ -21,10 +21,10 @@ namespace TouristAPI.Model
     public string Address { get; set; }
 
     [Required]
-    public int Lat { get; set; }
+    public double Lat { get; set; }
 
     [Required]
-    public int Lng { get; set; }
+    public double Lng { get; set; }
 
     [NotMapped]    
     public IFormFile Picture { get; set; }

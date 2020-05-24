@@ -1,25 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using TouristAPI;
-using TouristAPI.Database.Repository;
 using TouristAPI.Model;
 using TouristAPI.Service;
+using TouristAPI.Service.Exceptions;
 
 namespace TouristAPI.Api.Controllers
 {
   [ApiController]
   [Route("[controller]")]
   public class LocationController : ControllerBase
-  {    
+  {
     private ILocationService _locationService;
 
     public LocationController(ILocationService locationService)
-    {      
+    {
       _locationService = locationService;
     }
 
@@ -30,9 +26,20 @@ namespace TouristAPI.Api.Controllers
     }
 
     [HttpPost]
-    public Location Post(IFormCollection formData)
+    public IActionResult Post(IFormCollection formData)
     {
-      return _locationService.Save(formData);
+      try
+      {
+        return Created(string.Empty, _locationService.Save(formData));
+      }
+      catch (Exception ex)
+      {
+        if(ex is InvalidLocationException || ex is InvalidFileException){
+          return BadRequest(string.Format("{0}: {1}", ex.GetType(), ex.Message));
+        } else {
+          return StatusCode(StatusCodes.Status500InternalServerError, "An error has occured");
+        }
+      }
     }
   }
 }
