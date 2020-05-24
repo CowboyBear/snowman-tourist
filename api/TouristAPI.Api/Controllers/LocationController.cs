@@ -15,13 +15,11 @@ namespace TouristAPI.Api.Controllers
   [ApiController]
   [Route("[controller]")]
   public class LocationController : ControllerBase
-  {
-    private readonly ILogger<LocationController> _logger;
+  {    
     private ILocationService _locationService;
 
-    public LocationController(ILogger<LocationController> logger, ILocationService locationService)
-    {
-      _logger = logger;
+    public LocationController(ILocationService locationService)
+    {      
       _locationService = locationService;
     }
 

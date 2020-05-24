@@ -7,9 +7,9 @@ namespace TouristAPI.Database.Repository
 {
   public class LocationRepository : ILocationRepository
   {
-    private DatabaseContext _dbContext;
+    private IDatabaseContext _dbContext;
 
-    public LocationRepository(DatabaseContext dbContext)
+    public LocationRepository(IDatabaseContext dbContext)
     {
       this._dbContext = dbContext;
     }

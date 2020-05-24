@@ -28,6 +28,7 @@ namespace TouristAPI.Api
             services.AddScoped<ILocationService, LocationService>();      
 
             services.AddScoped<ILocationRepository, LocationRepository>();            
+            services.AddScoped<IDatabaseContext, DatabaseContext>();
 
             services.AddDbContext<DatabaseContext>(
               options => options.UseSqlServer(

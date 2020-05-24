@@ -4,7 +4,7 @@ using TouristAPI.Model;
 
 namespace TouristAPI.Database.Context
 {
-  public class DatabaseContext : DbContext
+  public class DatabaseContext : DbContext, IDatabaseContext
   {
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
     public virtual DbSet<Location> Locations { get; set; }
