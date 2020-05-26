@@ -13,8 +13,9 @@ using TouristAPI.Service.Validators;
 namespace TouristAPI.Api
 {
     public class Startup
-    {
-        public Startup(IConfiguration configuration)
+    {    
+
+    public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
@@ -26,9 +27,11 @@ namespace TouristAPI.Api
         {
             services.AddControllers();
                         
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILocationService, LocationService>();    
             services.AddScoped<ILocationFormValidator, LocationFormValidator>();
 
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ILocationRepository, LocationRepository>();            
             services.AddScoped<IDatabaseContext, DatabaseContext>();
 
@@ -48,9 +51,15 @@ namespace TouristAPI.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder => 
+              builder.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+            );
+
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            app.UseRouting();            
 
             app.UseAuthorization();
 
