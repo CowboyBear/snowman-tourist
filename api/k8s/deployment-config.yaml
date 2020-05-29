@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tourist-api-deployment
+  labels:
+    app: tourist-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tourist-api
+  template:
+    metadata:
+      labels:
+        app: tourist-api
+    spec:
+      serviceAccountName: tourist-api
+      containers:
+      - name: tourist-api
+        image: gcr.io/snowman-tourist/tourist-api
+        ports:
+        - containerPort: 80
+        env:
+          - name: TOURIST_API_DB_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: tourist-api-db-secret
+                key: connectionString
+        volumeMounts:
+          - mountPath: "/app/wwwroot/uploadedfiles"
+            name: uploaded-files-volume
+      - name: cloud-sql-proxy
+        # It is recommended to use the latest version of the Cloud SQL proxy
+        # Make sure to update on a regular schedule!
+        image: gcr.io/cloudsql-docker/gce-proxy:1.17
+        command:
+          - "/cloud_sql_proxy"
+      
+          # If connecting from a VPC-native GKE cluster, you can use the
+          # following flag to have the proxy connect over private IP
+          # - "-ip_address_types=PRIVATE"
+      
+          # Replace DB_PORT with the port the proxy should listen on
+          # Defaults: MySQL: 3306, Postgres: 5432, SQLServer: 1433
+          - "-instances=snowman-tourist:us-central1:tourist-api-db=tcp:1433"
+          - "-credential_file=/secrets/service_account.json"
+        securityContext:
+          # The default Cloud SQL proxy image is based on distroless, which
+          # runs as the "nonroot" user (uid: 65534) by default.
+          runAsNonRoot: false                
+        volumeMounts:
+          - name: sa-secret-volume
+            mountPath: /secrets/
+            readOnly: true
+      volumes:
+        - name: sa-secret-volume
+          secret:
+            secretName: tourist-api-sa-secret
+        - name: uploaded-files-volume
+          persistentVolumeClaim:
+            claimName: uploaded-files-volume-claim

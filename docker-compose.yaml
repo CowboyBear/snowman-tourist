@@ -11,6 +11,8 @@ services:
         - "tourist-api"
     environment: 
       - TOURIST_API_DB_CONNECTION_STRING=${TOURIST_API_DB_CONNECTION_STRING_DOCKER}
+    volumes: 
+      - "uploaded-files-volume:/app/wwwroot/uploadedfiles"
     depends_on: 
       - sqlserver
   sqlserver:
@@ -37,5 +39,7 @@ services:
 volumes: 
   sql-server-volume:        
     driver: local    
+  uploaded-files-volume:        
+    driver: local
     
 
