@@ -4,5 +4,4 @@ metadata:
   name: tourist-front-end-certificate
 spec:
   domains:
-    - snowman-tourist.matheusbertazzo.com
-    - matheusbertazzo.com
+    - snowman-tourist.matheusbertazzo.com    
