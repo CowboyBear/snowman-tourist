@@ -33,7 +33,7 @@ services:
       context: ./front-end
       dockerfile: Dockerfile
       labels: 
-        - "tourist-fe" 
+        - "tourist-fe"       
     depends_on: 
       - touristapi
 volumes: 

@@ -4,7 +4,10 @@ WORKDIR /usr/src/app
 COPY touristApp/package.json ./
 RUN npm install
 COPY ./touristApp .
-RUN npm run build
+
+ARG cloud
+
+RUN if [ -z "$cloud" ] ; then npm run build-local ; else npm run build-cloud ; fi
 
 ### STAGE 2: Run ###
 FROM nginx:1.17.1-alpine

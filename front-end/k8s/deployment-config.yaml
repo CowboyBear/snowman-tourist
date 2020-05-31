@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tourist-front-end-deployment
+  labels:
+    app: tourist-front-end
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tourist-front-end
+  template:
+    metadata:
+      labels:
+        app: tourist-front-end
+    spec:      
+      containers:
+      - name: tourist-front-end
+        image: gcr.io/snowman-tourist/tourist-front-end
+        ports:
+        - containerPort: 80       

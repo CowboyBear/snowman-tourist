@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1beta2
+kind: ManagedCertificate
+metadata:
+  name: tourist-api-certificate
+spec:
+  domains:
+    - snowman-tourist.api.matheusbertazzo.com

@@ -1,0 +1,11 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: tourist-api-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: tourist-api-ip
+    networking.gke.io/managed-certificates: tourist-api-certificate
+spec:
+  backend:
+    serviceName: tourist-api
+    servicePort: 80
