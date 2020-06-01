@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using GeoCoordinatePortable;
 using TouristAPI.Database.Context;
 using TouristAPI.Model;
 
@@ -24,6 +25,16 @@ namespace TouristAPI.Database.Repository
     public IList<Location> FindAll()
     {
       return this._dbContext.Locations.ToList();
+    }
+
+    public IList<Location> FindNearby(GeoCoordinate coordinate, int radius) {
+      
+      return this._dbContext.Locations
+        .ToList()
+        .Where(location => 
+          new GeoCoordinate(location.Lat, location.Lng).GetDistanceTo(coordinate) < radius
+        )
+        .ToList();
     }
 
   }

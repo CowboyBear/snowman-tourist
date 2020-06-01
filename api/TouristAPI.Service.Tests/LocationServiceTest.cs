@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
+using GeoCoordinatePortable;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
@@ -91,6 +92,44 @@ namespace TouristAPI.Service.Tests
       service.Save(form);
 
       mockRepository.Verify(repository => repository.Save(It.Is<Location>(location => location.PicturePath == null)), Times.Once);
+    }
+
+    [Fact]
+    public void FindNearby_ShouldReturnAListOfNearbyLocation_GivenCoordinatesAndARadius()
+    {
+      List<Location> mockList = new List<Location>();
+      mockRepository.Setup(repository => repository.FindNearby(It.IsAny<GeoCoordinate>(), It.IsAny<int>())).Returns(mockList);
+
+      IList<Location> result = service.FindNearby(90, -90, 500);
+
+      Assert.Equal(mockList, result);
+    }
+
+    [Fact]
+    public void FindNearby_ShouldParseCoordinatesAndCallRepository_GivenCoordinatesAndARadius()
+    {
+      GeoCoordinate expectedCoordinate = new GeoCoordinate(-90, 90);
+      int expectedRadius = 500;
+
+      service.FindNearby(expectedCoordinate.Latitude, expectedCoordinate.Longitude, expectedRadius);
+
+      mockRepository.Verify(repository => repository.FindNearby(
+        It.Is<GeoCoordinate>(
+          coordinate => coordinate.Latitude == expectedCoordinate.Latitude
+          && coordinate.Longitude == expectedCoordinate.Longitude
+        ),
+        expectedRadius
+      ), Times.Once);
+    }
+
+    [Fact]        
+    public void FindNearby_ShouldThrowAnInvalidLocationException_GivenInvalidCoordinates()
+    {      
+      string expectedExceptionMessage = "Latitude or Longitude invalid. Latitude range is -90 to 90; Longitude range is -180 to 180";
+
+      InvalidLocationException exception = Assert.Throws<InvalidLocationException>(() => service.FindNearby(91, 181, 500));
+
+      Assert.Equal(expectedExceptionMessage, exception.Message);
     }
   }
 }

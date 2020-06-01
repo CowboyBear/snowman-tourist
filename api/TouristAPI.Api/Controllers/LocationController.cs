@@ -20,9 +20,23 @@ namespace TouristAPI.Api.Controllers
     }
 
     [HttpGet]
-    public IList<Location> Get()
+    public IActionResult Get(double latitude, double longitude, int radius)
     {
-      return _locationService.FindAll();
+      try
+      {
+        if (radius == 0)
+        {
+          return Ok(_locationService.FindAll());
+        }
+        else
+        {
+          return Ok(_locationService.FindNearby(latitude, longitude, radius));
+        }
+      }
+      catch (Exception ex)
+      {
+        return HandleExceptions(ex);
+      }
     }
 
     [HttpPost]
@@ -34,11 +48,19 @@ namespace TouristAPI.Api.Controllers
       }
       catch (Exception ex)
       {
-        if(ex is InvalidLocationException || ex is InvalidFileException){
-          return BadRequest(string.Format("{0}: {1}", ex.GetType(), ex.Message));
-        } else {
-          return StatusCode(StatusCodes.Status500InternalServerError, "An error has occured");
-        }
+        return HandleExceptions(ex);
+      }
+    }
+
+    private IActionResult HandleExceptions(Exception ex)
+    {
+      if (ex is InvalidLocationException || ex is InvalidFileException)
+      {
+        return BadRequest(string.Format("{0}: {1}", ex.GetType(), ex.Message));
+      }
+      else
+      {
+        return StatusCode(StatusCodes.Status500InternalServerError, "An error has occured");
       }
     }
   }

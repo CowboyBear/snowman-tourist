@@ -22,9 +22,9 @@ namespace TouristAPI.Controller.Tests
     }
 
     [Fact]
-    public void Get_ShouldGetAllLocations_WhenCalled()
+    public void Get_ShouldFindAll_GivenRangeParameterIsZero()
     {
-      controller.Get();
+      controller.Get(0, 0, 0);
       mockLocationService.Verify(service => service.FindAll(), Times.Once);
     }
 
@@ -38,7 +38,7 @@ namespace TouristAPI.Controller.Tests
       Assert.True(result.GetType().Equals(typeof(CreatedResult)));
     }
 
-    [Fact]    
+    [Fact]
     public void Post_ShouldReturnHttp400_GivenAnInvalidFormIsSent()
     {
       mockLocationService.Setup(service => service.Save(It.IsAny<IFormCollection>())).Throws(new InvalidLocationException());
@@ -48,7 +48,7 @@ namespace TouristAPI.Controller.Tests
       Assert.True(result.GetType().Equals(typeof(BadRequestObjectResult)));
     }
 
-    [Fact]    
+    [Fact]
     public void Post_ShouldReturnHttp400_GivenAnInvalidFileIsSent()
     {
       mockLocationService.Setup(service => service.Save(It.IsAny<IFormCollection>())).Throws(new InvalidFileException());
@@ -58,7 +58,7 @@ namespace TouristAPI.Controller.Tests
       Assert.True(result.GetType().Equals(typeof(BadRequestObjectResult)));
     }
 
-    [Fact]    
+    [Fact]
     public void Post_ShouldReturnHttp500_GivenAnErrorOccurs()
     {
       mockLocationService.Setup(service => service.Save(It.IsAny<IFormCollection>())).Throws(new Exception());
@@ -66,6 +66,34 @@ namespace TouristAPI.Controller.Tests
       IActionResult result = controller.Post(new Mock<IFormCollection>().Object);
 
       Assert.True(result.GetType().Equals(typeof(ObjectResult)));
+    }
+
+    [Fact]
+    public void Get_ShouldReturnHttp500_GivenAnErrorOccurs()
+    {
+      mockLocationService.Setup(service => service.FindNearby(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<int>())).Throws(new Exception());
+
+      IActionResult result = controller.Get(90, -90, 500);
+
+      Assert.True(result.GetType().Equals(typeof(ObjectResult)));
+    }
+
+    [Fact]
+    public void Get_ShouldReturnHttp400_GivenInvalidCoordinatesAreSent()
+    {
+      mockLocationService.Setup(service => service.FindNearby(It.IsAny<double>(), It.IsAny<double>(), It.IsAny<int>())).Throws(new InvalidLocationException());
+
+      IActionResult result = controller.Get(90, -90, 500);
+
+      Assert.True(result.GetType().Equals(typeof(BadRequestObjectResult)));
+    }
+
+    [Fact]
+    public void Get_ShouldFindNearby_GivenRangeParameterIsNotZero()
+    {
+      IActionResult result = controller.Get(90, -90, 500);
+
+      mockLocationService.Verify(service => service.FindNearby(90, -90, 500));
     }
   }
 }

@@ -9,5 +9,6 @@ namespace TouristAPI.Service
   {
     Location Save(IFormCollection formData);
     IList<Location> FindAll();
+    IList<Location> FindNearby(double latitude, double longitude, int radius);
   }
 }

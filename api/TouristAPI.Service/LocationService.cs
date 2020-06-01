@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
+using GeoCoordinatePortable;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using TouristAPI.Database.Repository;
 using TouristAPI.Model;
+using TouristAPI.Service.Exceptions;
 using TouristAPI.Service.Validators;
 
 namespace TouristAPI.Service
@@ -82,6 +84,16 @@ namespace TouristAPI.Service
         UserId = formData["UserId"],
         PicturePath = fileName
       };
+    }
+
+    public IList<Location> FindNearby(double latitude, double longitude, int radius)
+    {
+      try {
+        GeoCoordinate coordinate = new GeoCoordinate(latitude, longitude);
+        return _repository.FindNearby(coordinate, radius);
+      } catch (ArgumentOutOfRangeException ex) {
+        throw new InvalidLocationException("Latitude or Longitude invalid. Latitude range is -90 to 90; Longitude range is -180 to 180");
+      }
     }
   }
 }
