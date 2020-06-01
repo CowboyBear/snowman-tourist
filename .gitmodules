@@ -1,0 +1,3 @@
+[submodule "front-end/touristApp"]
+	path = front-end/touristApp
+	url = git@github.com:CowboyBear/snowman-tourist-fe.git
